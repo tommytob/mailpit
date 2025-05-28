@@ -9,6 +9,7 @@ import (
 
 	"github.com/axllent/mailpit/config"
 	"github.com/axllent/mailpit/internal/logger"
+	"github.com/axllent/mailpit/internal/msgraph"
 	"github.com/axllent/mailpit/internal/tools"
 )
 
@@ -98,8 +99,42 @@ func createRelaySMTPClient(config config.SMTPRelayConfigStruct, addr string) (*s
 	return client, nil
 }
 
-// Relay will connect to a pre-configured SMTP server and send a message to one or more recipients.
+// Relay will send a message to one or more recipients using either Microsoft Graph API or a pre-configured SMTP server.
 func Relay(from string, to []string, msg []byte) error {
+	// Apply common message modifications
+	var err error
+
+	if config.SMTPRelayConfig.OverrideFrom != "" {
+		msg, err = tools.OverrideFromHeader(msg, config.SMTPRelayConfig.OverrideFrom)
+		if err != nil {
+			return fmt.Errorf("error overriding From header: %s", err.Error())
+		}
+
+		from = config.SMTPRelayConfig.OverrideFrom
+	}
+
+	// Check if Microsoft Graph API is enabled
+	if config.SMTPRelayConfig.MSGraph.Enabled {
+		// Use Microsoft Graph API to send the message
+		msGraphConfig := msgraph.Config{
+			TenantID:     config.SMTPRelayConfig.MSGraph.TenantID,
+			ClientID:     config.SMTPRelayConfig.MSGraph.ClientID,
+			ClientSecret: config.SMTPRelayConfig.MSGraph.ClientSecret,
+			Enabled:      true,
+		}
+
+		err := msgraph.SendMailFromRaw(msGraphConfig, from, to, msg)
+		if err != nil {
+			return fmt.Errorf("error sending message via Microsoft Graph API: %s", err.Error())
+		}
+
+		logger.Log().Debugf("[msgraph] sent message to %s from %s via Microsoft Graph API",
+			strings.Join(to, ", "), from)
+
+		return nil
+	}
+
+	// Fall back to SMTP relay
 	addr := fmt.Sprintf("%s:%d", config.SMTPRelayConfig.Host, config.SMTPRelayConfig.Port)
 
 	c, err := createRelaySMTPClient(config.SMTPRelayConfig, addr)

@@ -290,7 +290,9 @@ func initConfigFromEnv() {
 		config.SMTPRelayAll = true
 	}
 	config.SMTPRelayMatching = os.Getenv("MP_SMTP_RELAY_MATCHING")
-	config.SMTPRelayConfig = config.SMTPRelayConfigStruct{}
+	config.SMTPRelayConfig = config.SMTPRelayConfigStruct{
+		MSGraph: config.MSGraphConfigStruct{},
+	}
 	config.SMTPRelayConfig.Host = os.Getenv("MP_SMTP_RELAY_HOST")
 	if len(os.Getenv("MP_SMTP_RELAY_PORT")) > 0 {
 		config.SMTPRelayConfig.Port, _ = strconv.Atoi(os.Getenv("MP_SMTP_RELAY_PORT"))
@@ -307,6 +309,12 @@ func initConfigFromEnv() {
 	config.SMTPRelayConfig.OverrideSendTo = getEnabledFromEnv("MP_SMTP_RELAY_OVERRIDE_SEND_TO")
 	config.SMTPRelayConfig.AllowedRecipients = os.Getenv("MP_SMTP_RELAY_ALLOWED_RECIPIENTS")
 	config.SMTPRelayConfig.BlockedRecipients = os.Getenv("MP_SMTP_RELAY_BLOCKED_RECIPIENTS")
+
+	// Microsoft Graph API relay configuration
+	config.SMTPRelayConfig.MSGraph.Enabled = getEnabledFromEnv("MP_SMTP_RELAY_MSGRAPH_ENABLED")
+	config.SMTPRelayConfig.MSGraph.TenantID = os.Getenv("MP_SMTP_RELAY_MSGRAPH_TENANT_ID")
+	config.SMTPRelayConfig.MSGraph.ClientID = os.Getenv("MP_SMTP_RELAY_MSGRAPH_CLIENT_ID")
+	config.SMTPRelayConfig.MSGraph.ClientSecret = os.Getenv("MP_SMTP_RELAY_MSGRAPH_CLIENT_SECRET")
 
 	// SMTP forwarding
 	config.SMTPForwardConfigFile = os.Getenv("MP_SMTP_FORWARD_CONFIG")

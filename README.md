@@ -92,6 +92,21 @@ Static binaries can always be found on the [releases](https://github.com/axllent
 
 See [Docker instructions](https://mailpit.axllent.org/docs/install/docker/) for 386, amd64 & arm64 images.
 
+#### Building Docker with local changes
+
+To build a Docker image with your local changes for development and testing:
+
+```shell
+./build-local.sh
+```
+
+This will create a Docker image tagged as `mailpit-local:dev` that includes your local modifications.
+You can then run it with:
+
+```shell
+docker run -p 1025:1025 -p 8025:8025 mailpit-local:dev
+```
+
 
 ### Compile from source
 

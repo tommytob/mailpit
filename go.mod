@@ -4,6 +4,8 @@ go 1.23.0
 
 toolchain go1.23.2
 
+replace github.com/axllent/mailpit => github.com/tommytob/mailpit v0.0.2
+
 // https://github.com/jaytaylor/html2text/issues/67
 replace github.com/olekukonko/tablewriter => github.com/olekukonko/tablewriter v0.0.5
 
