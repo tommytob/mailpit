@@ -210,23 +210,32 @@ type autoTag struct {
 	Tags  []string
 }
 
+// MSGraphConfigStruct struct for Microsoft Graph API configuration
+type MSGraphConfigStruct struct {
+	Enabled      bool   `yaml:"enabled"`       // whether to use Microsoft Graph API
+	TenantID     string `yaml:"tenant-id"`     // Microsoft tenant ID
+	ClientID     string `yaml:"client-id"`     // Microsoft client ID
+	ClientSecret string `yaml:"client-secret"` // Microsoft client secret
+}
+
 // SMTPRelayConfigStruct struct for parsing yaml & storing variables
 type SMTPRelayConfigStruct struct {
-	Host                    string         `yaml:"host"`               // SMTP host
-	Port                    int            `yaml:"port"`               // SMTP port
-	STARTTLS                bool           `yaml:"starttls"`           // whether to use STARTTLS
-	TLS                     bool           `yaml:"tls"`                // whether to use TLS
-	AllowInsecure           bool           `yaml:"allow-insecure"`     // allow insecure authentication, ignore TLS validation
-	Auth                    string         `yaml:"auth"`               // none, plain, login, cram-md5
-	Username                string         `yaml:"username"`           // plain & cram-md5
-	Password                string         `yaml:"password"`           // plain
-	Secret                  string         `yaml:"secret"`             // cram-md5
-	ReturnPath              string         `yaml:"return-path"`        // allow overriding the bounce address
-	OverrideFrom            string         `yaml:"override-from"`      // allow overriding of the from address
-	AllowedRecipients       string         `yaml:"allowed-recipients"` // regex, if set needs to match for mails to be relayed
-	AllowedRecipientsRegexp *regexp.Regexp // compiled regexp using AllowedRecipients
-	BlockedRecipients       string         `yaml:"blocked-recipients"` // regex, if set prevents relating to these addresses
-	BlockedRecipientsRegexp *regexp.Regexp // compiled regexp using BlockedRecipients
+	Host                    string            `yaml:"host"`               // SMTP host
+	Port                    int               `yaml:"port"`               // SMTP port
+	STARTTLS                bool              `yaml:"starttls"`           // whether to use STARTTLS
+	TLS                     bool              `yaml:"tls"`                // whether to use TLS
+	AllowInsecure           bool              `yaml:"allow-insecure"`     // allow insecure authentication, ignore TLS validation
+	Auth                    string            `yaml:"auth"`               // none, plain, login, cram-md5
+	Username                string            `yaml:"username"`           // plain & cram-md5
+	Password                string            `yaml:"password"`           // plain
+	Secret                  string            `yaml:"secret"`             // cram-md5
+	ReturnPath              string            `yaml:"return-path"`        // allow overriding the bounce address
+	OverrideFrom            string            `yaml:"override-from"`      // allow overriding of the from address
+	AllowedRecipients       string            `yaml:"allowed-recipients"` // regex, if set needs to match for mails to be relayed
+	AllowedRecipientsRegexp *regexp.Regexp    // compiled regexp using AllowedRecipients
+	BlockedRecipients       string            `yaml:"blocked-recipients"` // regex, if set prevents relating to these addresses
+	BlockedRecipientsRegexp *regexp.Regexp    // compiled regexp using BlockedRecipients
+	MSGraph                 MSGraphConfigStruct `yaml:"msgraph"`          // Microsoft Graph API configuration
 
 	// DEPRECATED 2024/03/12
 	RecipientAllowlist string `yaml:"recipient-allowlist"`

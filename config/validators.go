@@ -149,9 +149,26 @@ func validateRelayConfig() error {
 		return fmt.Errorf("[relay] TLS & STARTTLS cannot be required together")
 	}
 
+	// Validate Microsoft Graph configuration if enabled
+	if SMTPRelayConfig.MSGraph.Enabled {
+		if SMTPRelayConfig.MSGraph.TenantID == "" {
+			return fmt.Errorf("[relay] Microsoft Graph tenant ID not set")
+		}
+		if SMTPRelayConfig.MSGraph.ClientID == "" {
+			return fmt.Errorf("[relay] Microsoft Graph client ID not set")
+		}
+		if SMTPRelayConfig.MSGraph.ClientSecret == "" {
+			return fmt.Errorf("[relay] Microsoft Graph client secret not set")
+		}
+
+		logger.Log().Info("[relay] enabling message relaying via Microsoft Graph API ")
+	}
+
 	ReleaseEnabled = true
 
-	logger.Log().Infof("[relay] enabling message relaying via %s:%d", SMTPRelayConfig.Host, SMTPRelayConfig.Port)
+	if !SMTPRelayConfig.MSGraph.Enabled {
+		logger.Log().Infof("[relay] enabling message relaying via %s:%d", SMTPRelayConfig.Host, SMTPRelayConfig.Port)
+	}
 
 	return nil
 }
